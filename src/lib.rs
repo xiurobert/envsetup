@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 
-use crate::cli_utils::{execute_cmd_list};
+use crate::cli_utils::execute_cmd_list;
 use crate::git::{process_git_cmds, validate_git_conf};
 use crate::toolchains::rust::ensure_rustup_present;
 
@@ -47,8 +47,6 @@ fn validate_language(language: &str) -> bool {
     }
 }
 
-
-
 /// The main run function. Called from the main.rs file.
 pub fn run(conf_path: &str) {
     let e_config = ingest_configuration_file(conf_path).unwrap_or_else(|e| {
@@ -80,7 +78,3 @@ fn process_config(conf: &EnvSetupConfig) {
 
     let git_cmd_results = execute_cmd_list(&process_git_cmds(git_conf));
 }
-
-
-
-
