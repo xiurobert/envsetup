@@ -1,14 +1,14 @@
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
-use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvSetupConfig {
     language: String,
     git: HashMap<String, String>,
-    setup_cmds: Vec<String>
+    setup_cmds: Vec<String>,
 }
 
 pub fn ingest_configuration_file(config_path: &str) -> Result<EnvSetupConfig, Box<dyn Error>> {
@@ -26,12 +26,12 @@ fn validate_language(language: &str) -> bool {
             }
             println!("Rustup not found!");
             false
-        },
+        }
         "python" => {
             // todo: support for python toolchain validation
             false
-        },
-        _ => false
+        }
+        _ => false,
     }
 }
 
@@ -91,13 +91,10 @@ fn execute_terminal_command(cmd: &str) -> bool {
         Command::new("sh").arg("-c").arg(cmd).output()
     };
     match output {
-        Ok(o) => {
-            o.status.success()
-        },
-        Err(_) => false
+        Ok(o) => o.status.success(),
+        Err(_) => false,
     }
 }
-
 
 fn process_git_cmds(git_conf: &HashMap<String, String>) -> Vec<String> {
     let mut git_cmds = Vec::new();
@@ -106,14 +103,12 @@ fn process_git_cmds(git_conf: &HashMap<String, String>) -> Vec<String> {
             "repo" => {
                 let cmd = format!("git clone {}", value);
                 git_cmds.push(cmd);
-            },
+            }
             "branch" => {
                 let cmd = format!("git checkout {}", value);
                 git_cmds.push(cmd);
-            },
-            _ => {
-
             }
+            _ => {}
         }
     }
     git_cmds
