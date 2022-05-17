@@ -55,26 +55,36 @@ pub fn run(conf_path: &str) {
     process_config(&e_config);
 }
 
-/// Processes the configuration object and runs appropriate checks and commands
-fn process_config(conf: &EnvSetupConfig) {
+/// Performs validation on the EnvSetupConfig struct
+/// Returns a boolean based on the validity of the configuration
+fn validate_config(conf: &EnvSetupConfig) -> bool {
     let language = &conf.language;
     let git_conf = &conf.git;
     let setup_cmds = &conf.setup_cmds;
 
     if !validate_language(language) {
         println!("Invalid language: {}", language);
-        return;
+        return false;
     }
 
-    if !validate_git_conf(&conf.git) {
+    if !validate_git_conf(git_conf) {
         println!("Git configuration is invalid");
-        return;
+        return false;
     }
 
     if setup_cmds.is_empty() {
         println!("No setup commands found");
+        return false;
+    }
+    true
+}
+
+/// Processes the configuration object and runs appropriate checks and commands
+fn process_config(conf: &EnvSetupConfig) {
+    if !validate_config(conf) {
         return;
     }
-
-    let git_cmd_results = execute_cmd_list(&process_git_cmds(git_conf));
+    println!("Executing git commands...");
+    let _git_cmd_results = execute_cmd_list(&process_git_cmds(&conf.git));
+    println!("Completed executing git commands!");
 }
