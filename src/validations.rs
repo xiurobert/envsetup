@@ -1,4 +1,8 @@
-use crate::{ensure_docker_present, ensure_python_present, ensure_rustup_present, EnvSetupConfig, process_language, validate_container_system, validate_git_conf};
+use crate::{
+    ensure_docker_present, ensure_python_present, ensure_rustup_present, process_language,
+    EnvSetupConfig,
+};
+use std::collections::HashMap;
 
 /// Validates the language parameter in the configuration file and ensures that it is supported
 /// by this tool
@@ -73,4 +77,20 @@ pub fn validate_container_system(container_system: &str) -> bool {
         }
         _ => false,
     }
+}
+
+/// Validates the git configuration in the configuration file and ensures that the git
+/// configuration complies with the specification and is supported by this program
+pub fn validate_git_conf(git_conf: &HashMap<String, String>) -> bool {
+    if git_conf.is_empty() {
+        return false;
+    }
+    let accepted_values = [String::from("repo"), String::from("branch")];
+    let mut result = true;
+    for key in git_conf.keys() {
+        if !accepted_values.contains(key) {
+            result = false;
+        }
+    }
+    result
 }
