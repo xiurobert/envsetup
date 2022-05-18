@@ -1,15 +1,15 @@
-mod cli_utils;
-mod git;
 mod toolchains;
 mod validations;
+mod tools;
+mod cli;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 
-use crate::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
-use crate::git::{check_if_in_repo, process_git_cmds};
+use crate::cli::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
+use crate::tools::git::{check_if_in_repo, process_git_cmds};
 use crate::toolchains::docker::ensure_docker_present;
 use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;

@@ -12,7 +12,7 @@ pub fn execute_cmd_list(cmd_list: &[String]) -> Vec<bool> {
 /// Execute a command "in the terminal"
 /// This function tries to emulate the experience of typing the command in your terminal
 /// and pressing enter.
-pub(crate) fn execute_terminal_command(cmd: &str) -> bool {
+pub fn execute_terminal_command(cmd: &str) -> bool {
     let output = if cfg!(target_os = "windows") {
         Command::new("cmd").arg("/C").arg(cmd).output()
     } else {
