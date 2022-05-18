@@ -9,7 +9,7 @@ use std::error::Error;
 use std::fs;
 
 use crate::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
-use crate::git::{check_if_in_repo, process_git_cmds, validate_git_conf};
+use crate::git::{check_if_in_repo, process_git_cmds};
 use crate::toolchains::docker::ensure_docker_present;
 use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
@@ -25,7 +25,7 @@ pub struct EnvSetupConfig {
 
 enum Language {
     Rust,
-    Python
+    Python,
 }
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
@@ -52,14 +52,10 @@ fn process_language(language: &str) -> bool {
             println!("exec: cargo build");
             execute_terminal_command("cargo build")
         }
-        "python" => {
-            true
-        }
+        "python" => true,
         _ => false,
     }
-
 }
-
 
 /// Processes the configuration object and runs appropriate checks and commands
 fn process_config(conf: &EnvSetupConfig) {
@@ -78,5 +74,4 @@ fn process_config(conf: &EnvSetupConfig) {
         let _setup_results = execute_cmd_list(setup_cmds);
         println!("Completed setup commands!");
     }
-
 }

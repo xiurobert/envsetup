@@ -6,15 +6,13 @@ use clap::{Parser, Subcommand};
 #[clap(author, version, about)]
 struct Cli {
     #[clap(subcommand)]
-    command: Option<Commands>
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
 enum Commands {
     Here,
-    Get {
-        repo: String
-    }
+    Get { repo: String },
 }
 
 fn main() {
@@ -25,7 +23,6 @@ fn main() {
         Some(Commands::Here) => run("envsetup.yml"),
         None => {
             println!("No command specified");
-
         }
     }
     // todo: support for specifying a github repo, and pulling the information from there
