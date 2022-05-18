@@ -9,6 +9,7 @@ use std::fs;
 
 use crate::cli_utils::execute_cmd_list;
 use crate::git::{process_git_cmds, validate_git_conf};
+use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,7 +41,11 @@ fn validate_language(language: &str) -> bool {
             false
         }
         "python" => {
-            // todo: support for python toolchain validation
+            if ensure_python_present() {
+                println!("Found python3!");
+                return true;
+            }
+            println!("Could not find python3!");
             false
         }
         _ => false,
