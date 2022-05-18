@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::execute_terminal_command;
+use std::collections::HashMap;
 
 pub fn check_if_in_repo(possible_repo_dir: &str) -> bool {
     let cmd = format!(
