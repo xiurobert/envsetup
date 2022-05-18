@@ -1,6 +1,7 @@
 mod cli_utils;
 mod git;
 mod toolchains;
+mod validations;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -9,8 +10,10 @@ use std::fs;
 
 use crate::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
 use crate::git::{check_if_in_repo, process_git_cmds, validate_git_conf};
+use crate::toolchains::docker::ensure_docker_present;
 use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
+use crate::validations::validate_config;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvSetupConfig {
@@ -34,30 +37,6 @@ pub fn ingest_configuration_file(config_path: &str) -> Result<EnvSetupConfig, Bo
     Ok(result)
 }
 
-/// Validates the language parameter in the configuration file and ensures that it is supported
-/// by this tool
-fn validate_language(language: &str) -> bool {
-    match language {
-        "rust" => {
-            if ensure_rustup_present() {
-                println!("Found rustup!");
-                return true;
-            }
-            println!("Rustup not found!");
-            false
-        }
-        "python" => {
-            if ensure_python_present() {
-                println!("Found python3!");
-                return true;
-            }
-            println!("Could not find python3!");
-            false
-        }
-        _ => false,
-    }
-}
-
 /// The main run function. Called from the main.rs file.
 pub fn run(conf_path: &str) {
     let e_config = ingest_configuration_file(conf_path).unwrap_or_else(|e| {
@@ -66,27 +45,7 @@ pub fn run(conf_path: &str) {
     process_config(&e_config);
 }
 
-fn ensure_docker_present() -> bool {
-    ensure_tool_present("docker")
-}
-
-fn validate_container_system(container_system: &str) -> bool {
-    if container_system.is_empty() {
-        return false;
-    }
-    match container_system {
-        "docker" => {
-            if !ensure_docker_present() {
-                println!("Could not find docker on your system!");
-                return false;
-            }
-            println!("Found docker!");
-            true
-        }
-        _ => false,
-    }
-}
-
+/// Handles the "initial" setup for the environment.
 fn process_language(language: &str) -> bool {
     match language {
         "rust" => {
@@ -101,38 +60,6 @@ fn process_language(language: &str) -> bool {
 
 }
 
-/// Performs validation on the EnvSetupConfig struct
-/// Returns a boolean based on the validity of the configuration
-fn validate_config(conf: &EnvSetupConfig) -> bool {
-    let language = &conf.language;
-    let git_conf = &conf.git;
-    let setup_cmds = &conf.setup_cmds;
-    let container_system = &conf.container_system;
-
-    if !validate_language(language) {
-        println!("Invalid language: {}", language);
-        return false;
-    }
-
-    if !process_language(language) {
-        println!("Could not process language: {}", language);
-        return false;
-    }
-    println!("Processed default commands for language: {}", language);
-
-    if !validate_git_conf(git_conf) {
-        println!("Git configuration is invalid");
-        return false;
-    }
-
-    if let Some(container_system) = container_system {
-        if !validate_container_system(container_system) {
-            println!("Container system is not supported");
-            return false;
-        }
-    }
-    true
-}
 
 /// Processes the configuration object and runs appropriate checks and commands
 fn process_config(conf: &EnvSetupConfig) {
