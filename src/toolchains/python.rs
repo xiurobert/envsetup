@@ -1,4 +1,4 @@
-use crate::cli_utils::{ensure_tool_present, execute_terminal_command};
+use crate::ensure_tool_present;
 
 /// Checks if python3 is installed
 pub fn ensure_python_present() -> bool {
