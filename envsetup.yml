@@ -2,7 +2,3 @@ language: rust
 git:
   repo: https://github.com/xiurobert/envsetup
   branch: master
-
-
-setup_cmds:
-  - cargo install
