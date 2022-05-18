@@ -23,3 +23,13 @@ pub(crate) fn execute_terminal_command(cmd: &str) -> bool {
         Err(_) => false,
     }
 }
+
+/// Checks to ensure that some CLI tool is present
+/// This function essentially runs which <tool>
+pub fn ensure_tool_present(tool: &str) -> bool {
+    if cfg!(target_os = "windows") {
+        execute_terminal_command(format!("where {}", tool).as_str())
+    } else {
+        execute_terminal_command(format!("which {}", tool).as_str())
+    }
+}
