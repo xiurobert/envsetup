@@ -1,4 +1,6 @@
-use std::process::Command;
+use std::process::{Command, Stdio};
+use std::path::Path;
+use std::io::{BufReader, BufRead};
 
 /// Execute a list of commands
 pub fn execute_cmd_list(cmd_list: &[String]) -> Vec<bool> {
@@ -32,4 +34,34 @@ pub fn ensure_tool_present(tool: &str) -> bool {
     } else {
         execute_terminal_command(format!("which {}", tool).as_str())
     }
+}
+
+pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&'static str>) {
+    let mut cmd = Command::new(binary.as_ref())
+        .args(&args)
+        .stdout(Stdio::piped())
+        .spawn()
+        .unwrap();
+
+    {
+        let stdout = cmd.stdout.as_mut().unwrap();
+        let stdout_reader = BufReader::new(stdout);
+        let stdout_lines = stdout_reader.lines();
+
+        for line in stdout_lines {
+            if let Ok(l) = line {
+                println!("> {}", l);
+            }
+            println!();
+        }
+    }
+
+    cmd.wait().unwrap();
+}
+
+
+#[test]
+
+fn test_exec_stream() {
+    exec_stream("apt", vec!["search", "rust"]);
 }
