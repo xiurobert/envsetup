@@ -8,7 +8,7 @@ use std::error::Error;
 use std::fs;
 
 use crate::cli_utils::execute_cmd_list;
-use crate::git::{process_git_cmds, validate_git_conf};
+use crate::git::{check_if_in_repo, process_git_cmds, validate_git_conf};
 use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
 
@@ -89,7 +89,14 @@ fn process_config(conf: &EnvSetupConfig) {
     if !validate_config(conf) {
         return;
     }
-    println!("Executing git commands...");
-    let _git_cmd_results = execute_cmd_list(&process_git_cmds(&conf.git));
-    println!("Completed executing git commands!");
+    if !check_if_in_repo(".") {
+        println!("Executing git commands...");
+        let _git_cmd_results = execute_cmd_list(&process_git_cmds(&conf.git));
+        println!("Completed executing git commands!");
+    } else {
+        println!("Already in a git repository!");
+        println!("Running setup commands...");
+        let _setup_results = execute_cmd_list(&conf.setup_cmds);
+    }
+
 }

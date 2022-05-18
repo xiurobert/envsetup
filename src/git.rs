@@ -1,4 +1,10 @@
 use std::collections::HashMap;
+use crate::cli_utils::execute_terminal_command;
+
+pub fn check_if_in_repo(possible_repo_dir: &str) -> bool {
+    let cmd = format!("cd {} && git rev-parse --is-inside-work-tree", possible_repo_dir);
+    execute_terminal_command(&cmd)
+}
 
 /// Processes the git commands as defined in the envsetup.yml configuration file
 /// And dumps them out as a list of console-executable commands
