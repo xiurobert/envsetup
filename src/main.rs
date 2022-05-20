@@ -17,6 +17,7 @@ enum Commands {
 
 fn main() {
     println!("envsetup v{}", env!("CARGO_PKG_VERSION"));
+    // todo: move this into lib.rs
     let cli = Cli::parse();
     match &cli.command {
         Some(Commands::Get { repo }) => println!("Repo: {}", repo),
@@ -25,5 +26,4 @@ fn main() {
             println!("No command specified");
         }
     }
-    // todo: support for specifying a github repo, and pulling the information from there
 }
