@@ -51,14 +51,25 @@ pub fn ensure_tool_present(tool: &str) -> bool {
 /// * `args` - The arguments to pass to the program
 /// # Returns
 /// `true` if the command was executed successfully, `false` otherwise
-pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&'static str>) -> bool {
-    let mut cmd = Command::new(binary.as_ref())
-        .args(&args)
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
+pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&'static str>, shell: bool) -> bool {
+    let mut cmd = Command::new("sh");
+    if shell {
+        cmd.arg("-c");
+        cmd.arg(format!("{} {}", binary.as_ref().display(), args.join(" ")));
+        cmd.stdout(Stdio::piped());
+        cmd.stderr(Stdio::piped());
+    } else {
+        cmd = Command::new(binary.as_ref());
+        cmd.args(&args);
+        cmd.stdout(Stdio::piped());
+        cmd.stderr(Stdio::piped());
+
+    }
+
+    let mut proc = cmd.spawn().unwrap();
+
     {
-        let stdout = cmd.stdout.as_mut().unwrap();
+        let stdout = proc.stdout.as_mut().unwrap();
         let stdout_reader = BufReader::new(stdout);
         let stdout_lines = stdout_reader.lines();
 
@@ -70,6 +81,17 @@ pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&'static str>) -> bool {
         }
     }
 
-    let exit_status = cmd.wait().unwrap();
+    let exit_status = proc.wait().unwrap();
     exit_status.success()
+}
+
+
+#[cfg(test)]
+mod tests {
+    use crate::cli::cli_utils::exec_stream;
+
+    #[test]
+    fn test_exec_stream() {
+        exec_stream("echo", vec!["hello world"], true);
+    }
 }
