@@ -1,9 +1,9 @@
 mod cli;
+mod config_file;
 mod os;
 mod toolchains;
 mod tools;
 mod validations;
-mod config_file;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -17,10 +17,6 @@ use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
 use crate::tools::git::{check_if_in_repo, process_git_cmds};
 use crate::validations::validate_config;
-
-
-
-
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
 /// The configuration file should be a YAML file. This function will throw an error if

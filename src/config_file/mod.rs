@@ -1,6 +1,5 @@
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
-
+use std::collections::HashMap;
 
 type LanguageOptions = HashMap<String, String>;
 type GitOptions = HashMap<String, String>;
