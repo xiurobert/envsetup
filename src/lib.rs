@@ -23,10 +23,6 @@ pub struct EnvSetupConfig {
     container_system: Option<String>,
 }
 
-enum Language {
-    Rust,
-    Python,
-}
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
 /// The configuration file should be a YAML file. This function will throw an error if
