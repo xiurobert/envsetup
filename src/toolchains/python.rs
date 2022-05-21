@@ -52,7 +52,6 @@ fn calc_ver(python_version: &PythonVersion) -> &str {
     pyver
 }
 
-#[cfg(target_os = "macos")]
 fn install_python_macos(python_version: &PythonVersion) -> bool {
     let install_arg = format!("python@{}", calc_ver(python_version));
     exec_stream("brew", vec!["install", install_arg.as_str()], true)
