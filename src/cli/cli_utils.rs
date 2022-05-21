@@ -51,7 +51,7 @@ pub fn ensure_tool_present(tool: &str) -> bool {
 /// * `args` - The arguments to pass to the program
 /// # Returns
 /// `true` if the command was executed successfully, `false` otherwise
-pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&'static str>, shell: bool) -> bool {
+pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> bool {
     let mut cmd = Command::new("sh");
     if shell {
         cmd.arg("-c");
