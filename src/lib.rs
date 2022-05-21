@@ -2,6 +2,7 @@ mod cli;
 mod toolchains;
 mod tools;
 mod validations;
+mod os;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -15,10 +16,14 @@ use crate::toolchains::rust::ensure_rustup_present;
 use crate::tools::git::{check_if_in_repo, process_git_cmds};
 use crate::validations::validate_config;
 
+type LanguageOptions = HashMap<String, String>;
+type GitOptions = HashMap<String, String>;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvSetupConfig {
     language: String,
-    git: HashMap<String, String>,
+    language_options: Option<LanguageOptions>,
+    git: GitOptions,
     setup_cmds: Option<Vec<String>>,
     container_system: Option<String>,
 }
