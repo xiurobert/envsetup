@@ -18,6 +18,10 @@ pub enum PythonVersion {
 pub fn install_python(python_version: &PythonVersion) -> bool {
     if cfg!(target = "macos") {
         return install_python_macos(python_version);
+    } else if cfg!(target = "windows") {
+        return install_python_windows(python_version);
+    } else if cfg!(target = "linux") {
+        return install_python_linux(python_version);
     }
     false
 }
@@ -29,6 +33,7 @@ fn install_python_windows(python_version: &PythonVersion) -> bool {
 
 fn install_python_linux(python_version: &PythonVersion) -> bool {
     let package = format!("python{}", calc_ver(python_version));
+    linux_add_deadsnakes_ppa();
     if check_aptget_present() {
         return exec_stream("apt-get", vec!["install", package.as_str()], true);
     }
@@ -43,13 +48,12 @@ fn linux_add_deadsnakes_ppa() -> bool {
 }
 
 fn calc_ver(python_version: &PythonVersion) -> &str {
-    let pyver = match python_version {
+    match python_version {
         PythonVersion::Python3_10 => "3.10",
         PythonVersion::Python3_9 => "3.9",
         PythonVersion::Python3_8 => "3.8",
         PythonVersion::Python3_7 => "3.7",
-    };
-    pyver
+    }
 }
 
 fn install_python_macos(python_version: &PythonVersion) -> bool {

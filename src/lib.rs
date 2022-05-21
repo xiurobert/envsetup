@@ -3,6 +3,7 @@ mod os;
 mod toolchains;
 mod tools;
 mod validations;
+mod config_file;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -10,23 +11,16 @@ use std::error::Error;
 use std::fs;
 
 use crate::cli::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
+use crate::config_file::EnvSetupConfig;
 use crate::toolchains::docker::ensure_docker_present;
 use crate::toolchains::python::ensure_python_present;
 use crate::toolchains::rust::ensure_rustup_present;
 use crate::tools::git::{check_if_in_repo, process_git_cmds};
 use crate::validations::validate_config;
 
-type LanguageOptions = HashMap<String, String>;
-type GitOptions = HashMap<String, String>;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct EnvSetupConfig {
-    language: String,
-    language_options: Option<LanguageOptions>,
-    git: GitOptions,
-    setup_cmds: Option<Vec<String>>,
-    container_system: Option<String>,
-}
+
+
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
 /// The configuration file should be a YAML file. This function will throw an error if
