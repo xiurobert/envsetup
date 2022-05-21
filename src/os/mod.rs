@@ -1,5 +1,5 @@
-use std::env;
 use crate::ensure_tool_present;
+use std::env;
 
 pub fn check_homebrew_present() -> bool {
     cfg!(target_os = "macos") && ensure_tool_present("brew")

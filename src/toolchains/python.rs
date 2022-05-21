@@ -15,12 +15,11 @@ pub enum PythonVersion {
     Python3_7,
 }
 
-pub fn install_python(python_version: &PythonVersion) -> bool{
+pub fn install_python(python_version: &PythonVersion) -> bool {
     if cfg!(target = "macos") {
         return install_python_macos(python_version);
     }
     false
-
 }
 
 fn install_python_windows(python_version: &PythonVersion) -> bool {

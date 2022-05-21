@@ -11,7 +11,7 @@ struct Cli {
     /// Whether to automatically install all the necessary components on your system
     /// if they are not present
     #[clap(short, long)]
-    auto_install: bool
+    auto_install: bool,
 }
 
 #[derive(Subcommand)]
@@ -22,7 +22,7 @@ enum Commands {
     /// Pulls a repo from GitHub and automatically runs envsetup in the project
     Get {
         /// The repo to pull. Should be in the format username/repo (e.g. rust-lang/rust)
-        repo: String
+        repo: String,
     },
 }
 

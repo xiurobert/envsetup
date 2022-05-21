@@ -1,7 +1,7 @@
 use std::error::Error;
-use std::process::{Command, Output, Stdio};
+use std::io::{BufRead, BufReader};
 use std::path::Path;
-use std::io::{BufReader, BufRead};
+use std::process::{Command, Output, Stdio};
 
 /// Execute a list of commands
 pub fn execute_cmd_list(cmd_list: &[String]) -> Vec<bool> {
@@ -63,7 +63,6 @@ pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> b
         cmd.args(&args);
         cmd.stdout(Stdio::piped());
         cmd.stderr(Stdio::piped());
-
     }
 
     let mut proc = cmd.spawn().unwrap();
@@ -84,7 +83,6 @@ pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> b
     let exit_status = proc.wait().unwrap();
     exit_status.success()
 }
-
 
 #[cfg(test)]
 mod tests {

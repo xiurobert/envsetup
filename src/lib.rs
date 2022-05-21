@@ -1,8 +1,8 @@
 mod cli;
+mod os;
 mod toolchains;
 mod tools;
 mod validations;
-mod os;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -27,7 +27,6 @@ pub struct EnvSetupConfig {
     setup_cmds: Option<Vec<String>>,
     container_system: Option<String>,
 }
-
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
 /// The configuration file should be a YAML file. This function will throw an error if
