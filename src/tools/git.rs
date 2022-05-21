@@ -11,7 +11,7 @@ pub fn check_if_in_repo(possible_repo_dir: &str) -> bool {
         "cd {} && git rev-parse --is-inside-work-tree",
         possible_repo_dir
     );
-    execute_terminal_command(&cmd)
+    execute_terminal_command(&cmd).is_ok()
 }
 
 /// Processes the git commands as defined in the envsetup.yml configuration file

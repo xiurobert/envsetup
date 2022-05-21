@@ -50,7 +50,7 @@ fn process_language(language: &str) -> bool {
     match language {
         "rust" => {
             println!("exec: cargo build");
-            execute_terminal_command("cargo build")
+            execute_terminal_command("cargo build").is_ok()
         }
         "python" => true,
         _ => false,
