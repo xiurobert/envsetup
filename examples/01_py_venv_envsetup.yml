@@ -1,0 +1,7 @@
+language: python
+language_config:
+  version: 3.9
+  toolchain: virtualenv
+git:
+  repo: https://github.com/example/repo
+  branch: master
