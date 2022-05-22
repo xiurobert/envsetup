@@ -1,5 +1,6 @@
 use crate::execute_terminal_command;
-use std::collections::HashMap;
+
+use crate::config_file::GitOptions;
 
 /// Checks if a directory is actually a git repository
 /// # Arguments
@@ -22,20 +23,9 @@ pub fn check_if_in_repo(possible_repo_dir: &str) -> bool {
 /// # Returns
 /// A list of console-executable commands
 ///
-pub fn process_git_cmds(git_conf: &HashMap<String, String>) -> Vec<String> {
+pub fn process_git_cmds(git_conf: &GitOptions) -> Vec<String> {
     let mut git_cmds = Vec::new();
-    for (key, value) in git_conf {
-        match key.as_ref() {
-            "repo" => {
-                let cmd = format!("git clone {}", value);
-                git_cmds.push(cmd);
-            }
-            "branch" => {
-                let cmd = format!("git checkout {}", value);
-                git_cmds.push(cmd);
-            }
-            _ => {}
-        }
-    }
+    git_cmds.push(format!("git clone {}", git_conf.repo));
+    git_cmds.push(format!("git checkout {}", git_conf.branch));
     git_cmds
 }

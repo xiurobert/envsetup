@@ -1,64 +1,23 @@
 use crate::{
-    ensure_docker_present, ensure_python_present, ensure_rustup_present, process_language,
+    ensure_docker_present, process_language,
     EnvSetupConfig,
 };
-use std::collections::HashMap;
-use crate::config_file::LanguageOptions;
 
-/// Validates the language parameter in the configuration file and ensures that it is supported
-/// by this tool
-fn validate_language(language: &str) -> bool {
-    match language {
-        "rust" => {
-            if ensure_rustup_present() {
-                println!("Found rustup!");
-                return true;
-            }
-            println!("Rustup not found!");
-            false
-        }
-        "python" => {
-            if ensure_python_present() {
-                println!("Found python3!");
-                return true;
-            }
-            println!("Could not find python3!");
-            false
-        }
-        _ => false,
-    }
-}
 
 /// Performs validation on the EnvSetupConfig struct
 /// Returns a boolean based on the validity of the configuration
 pub fn validate_config(conf: &EnvSetupConfig) -> bool {
     let language = &conf.language;
-    let language_opts = &conf.language_options;
-    let git_conf = &conf.git;
-    let setup_cmds = &conf.setup_cmds;
+    // let language_opts = &conf.language_options;
+    // let setup_cmds = &conf.setup_cmds;
     let container_system = &conf.container_system;
 
-    if !validate_language(language) {
-        println!("Invalid language: {}", language);
-        return false;
-    }
-
     if !process_language(language) {
-        println!("Could not process language: {}", language);
+        println!("Could not process language: {:?}", language);
         return false;
     }
 
-    if let Some(language_opts) = language_opts {
-
-    }
-
-
-    println!("Processed default commands for language: {}", language);
-
-    if !validate_git_conf(git_conf) {
-        println!("Git configuration is invalid");
-        return false;
-    }
+    println!("Processed default commands for language: {:?}", language);
 
     if let Some(container_system) = container_system {
         if !validate_container_system(container_system) {
@@ -67,21 +26,6 @@ pub fn validate_config(conf: &EnvSetupConfig) -> bool {
         }
     }
     true
-}
-
-fn validate_language_opts(opts: &LanguageOptions, language: &String) -> bool {
-    match language.as_ref() {
-        "python" => {
-            // todo: actually check the python version
-            true
-        },
-        "rust" => {
-            opts.is_empty()
-        },
-        _ => {
-            false
-        }
-    }
 }
 
 /// Validates the container system attribute in the configuration file
@@ -100,20 +44,4 @@ fn validate_container_system(container_system: &str) -> bool {
         }
         _ => false,
     }
-}
-
-/// Validates the git configuration in the configuration file and ensures that the git
-/// configuration complies with the specification and is supported by this program
-fn validate_git_conf(git_conf: &HashMap<String, String>) -> bool {
-    if git_conf.is_empty() {
-        return false;
-    }
-    let accepted_values = [String::from("repo"), String::from("branch")];
-    let mut result = true;
-    for key in git_conf.keys() {
-        if !accepted_values.contains(key) {
-            result = false;
-        }
-    }
-    result
 }
