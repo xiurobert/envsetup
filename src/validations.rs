@@ -3,6 +3,7 @@ use crate::{
     EnvSetupConfig,
 };
 use std::collections::HashMap;
+use crate::config_file::LanguageOptions;
 
 /// Validates the language parameter in the configuration file and ensures that it is supported
 /// by this tool
@@ -32,6 +33,7 @@ fn validate_language(language: &str) -> bool {
 /// Returns a boolean based on the validity of the configuration
 pub fn validate_config(conf: &EnvSetupConfig) -> bool {
     let language = &conf.language;
+    let language_opts = &conf.language_options;
     let git_conf = &conf.git;
     let setup_cmds = &conf.setup_cmds;
     let container_system = &conf.container_system;
@@ -45,6 +47,12 @@ pub fn validate_config(conf: &EnvSetupConfig) -> bool {
         println!("Could not process language: {}", language);
         return false;
     }
+
+    if let Some(language_opts) = language_opts {
+
+    }
+
+
     println!("Processed default commands for language: {}", language);
 
     if !validate_git_conf(git_conf) {
@@ -61,8 +69,23 @@ pub fn validate_config(conf: &EnvSetupConfig) -> bool {
     true
 }
 
+fn validate_language_opts(opts: &LanguageOptions, language: &String) -> bool {
+    match language.as_ref() {
+        "python" => {
+            // todo: actually check the python version
+            true
+        },
+        "rust" => {
+            opts.is_empty()
+        },
+        _ => {
+            false
+        }
+    }
+}
+
 /// Validates the container system attribute in the configuration file
-pub fn validate_container_system(container_system: &str) -> bool {
+fn validate_container_system(container_system: &str) -> bool {
     if container_system.is_empty() {
         return false;
     }
@@ -81,7 +104,7 @@ pub fn validate_container_system(container_system: &str) -> bool {
 
 /// Validates the git configuration in the configuration file and ensures that the git
 /// configuration complies with the specification and is supported by this program
-pub fn validate_git_conf(git_conf: &HashMap<String, String>) -> bool {
+fn validate_git_conf(git_conf: &HashMap<String, String>) -> bool {
     if git_conf.is_empty() {
         return false;
     }

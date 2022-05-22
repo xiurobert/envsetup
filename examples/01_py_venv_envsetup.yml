@@ -1,5 +1,5 @@
 language: python
-language_config:
+language_options:
   version: 3.9
   toolchain: virtualenv
 git:

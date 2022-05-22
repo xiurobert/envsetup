@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-type LanguageOptions = HashMap<String, String>;
-type GitOptions = HashMap<String, String>;
+pub type LanguageOptions = HashMap<String, String>;
+pub type GitOptions = HashMap<String, String>;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EnvSetupConfig {

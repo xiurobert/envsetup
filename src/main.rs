@@ -12,6 +12,10 @@ struct Cli {
     /// if they are not present
     #[clap(short, long)]
     auto_install: bool,
+
+    /// Accepts all prompts given with yes
+    #[clap(short = 'y', long = "yes")]
+    accept_all: bool
 }
 
 #[derive(Subcommand)]

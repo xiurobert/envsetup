@@ -5,8 +5,8 @@ mod toolchains;
 mod tools;
 mod validations;
 
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+
+
 use std::error::Error;
 use std::fs;
 
@@ -21,7 +21,7 @@ use crate::validations::validate_config;
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct
 /// The configuration file should be a YAML file. This function will throw an error if
 /// the file could not be deserialized into the EnvSetupConfig struct
-pub fn ingest_configuration_file(config_path: &str) -> Result<EnvSetupConfig, Box<dyn Error>> {
+fn ingest_configuration_file(config_path: &str) -> Result<EnvSetupConfig, Box<dyn Error>> {
     let conf_str = fs::read_to_string(config_path)?;
     let result: EnvSetupConfig = serde_yaml::from_str(&conf_str)?;
     Ok(result)
