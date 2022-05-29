@@ -1,8 +1,5 @@
-mod cli;
 mod config_file;
-mod os;
 mod toolchains;
-mod tools;
 mod validations;
 pub mod git;
 pub mod cli_utils;
@@ -10,8 +7,10 @@ pub mod cli_utils;
 
 use std::error::Error;
 use std::fs;
+use crate::cli_utils::{execute_cmd_list, execute_terminal_command};
 
 use crate::config_file::{EnvSetupConfig, Language};
+use crate::git::{check_if_in_repo, process_git_cmds};
 use crate::toolchains::docker::ensure_docker_present;
 use crate::validations::validate_config;
 
