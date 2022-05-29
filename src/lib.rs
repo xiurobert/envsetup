@@ -4,18 +4,15 @@ mod os;
 mod toolchains;
 mod tools;
 mod validations;
-
+pub mod git;
+pub mod cli_utils;
 
 
 use std::error::Error;
 use std::fs;
 
-use crate::cli::cli_utils::{ensure_tool_present, execute_cmd_list, execute_terminal_command};
 use crate::config_file::{EnvSetupConfig, Language};
 use crate::toolchains::docker::ensure_docker_present;
-// use crate::toolchains::python::ensure_python_present;
-// use crate::toolchains::rust::ensure_rustup_present;
-use crate::tools::git::{check_if_in_repo, process_git_cmds};
 use crate::validations::validate_config;
 
 /// Ingests a configuration file and returns a `EnvSetupConfig` struct

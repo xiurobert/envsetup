@@ -86,7 +86,7 @@ pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> b
 
 #[cfg(test)]
 mod tests {
-    use crate::cli::cli_utils::exec_stream;
+    use crate::cli_utils::exec_stream;
 
     #[test]
     fn test_exec_stream() {
