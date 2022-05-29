@@ -28,3 +28,4 @@ pub fn process_git_cmds(git_conf: &GitOptions) -> Vec<String> {
     git_cmds.push(format!("git clone {}", git_conf.repo));
     git_cmds.push(format!("git checkout {}", git_conf.branch));
     git_cmds
+}
