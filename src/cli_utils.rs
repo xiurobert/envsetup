@@ -45,25 +45,62 @@ pub fn ensure_tool_present(tool: &str) -> bool {
     }
 }
 
-/// Executes a command in the terminal and streams the output directly to stdout
+// /// Executes a command in the terminal and streams the output directly to stdout
+// /// # Arguments
+// /// * `binary` - The program to execute
+// /// * `args` - The arguments to pass to the program
+// /// # Returns
+// /// `true` if the command was executed successfully, `false` otherwise
+// pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> bool {
+//     let mut cmd = Command::new("sh");
+//     if shell {
+//         cmd.arg("-c");
+//         cmd.arg(format!("{} {}", binary.as_ref().display(), args.join(" ")));
+//         cmd.stdout(Stdio::piped());
+//         cmd.stderr(Stdio::piped());
+//     } else {
+//         cmd = Command::new(binary.as_ref());
+//         cmd.args(&args);
+//         cmd.stdout(Stdio::piped());
+//         cmd.stderr(Stdio::piped());
+//     }
+//
+//     let mut proc = cmd.spawn().unwrap();
+//
+//     {
+//         let stdout = proc.stdout.as_mut().unwrap();
+//         let stdout_reader = BufReader::new(stdout);
+//         let stdout_lines = stdout_reader.lines();
+//
+//         for line in stdout_lines {
+//             if let Ok(l) = line {
+//                 println!("{}", l);
+//             }
+//             println!();
+//         }
+//     }
+//
+//     let exit_status = proc.wait().unwrap();
+//     exit_status.success()
+// }
+
+/// Executes a command in the terminal with the shell
 /// # Arguments
-/// * `binary` - The program to execute
-/// * `args` - The arguments to pass to the program
+/// * `shell_cmd` - The command to execute
 /// # Returns
 /// `true` if the command was executed successfully, `false` otherwise
-pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> bool {
+pub fn exec_stream_shell(shell_cmd: &str) -> bool {
     let mut cmd = Command::new("sh");
-    if shell {
-        cmd.arg("-c");
-        cmd.arg(format!("{} {}", binary.as_ref().display(), args.join(" ")));
-        cmd.stdout(Stdio::piped());
-        cmd.stderr(Stdio::piped());
+
+    if cfg!(target_os = "windows") {
+        cmd = Command::new("cmd");
+        cmd.arg("/C");
     } else {
-        cmd = Command::new(binary.as_ref());
-        cmd.args(&args);
-        cmd.stdout(Stdio::piped());
-        cmd.stderr(Stdio::piped());
+        cmd.arg("-c");
     }
+    cmd.arg(shell_cmd);
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
 
     let mut proc = cmd.spawn().unwrap();
 
@@ -80,16 +117,16 @@ pub fn exec_stream<P: AsRef<Path>>(binary: P, args: Vec<&str>, shell: bool) -> b
         }
     }
 
-    let exit_status = proc.wait().unwrap();
-    exit_status.success()
+    proc.wait().unwrap().success()
+
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::cli_utils::exec_stream;
+    use crate::cli_utils::exec_stream_shell;
 
     #[test]
     fn test_exec_stream() {
-        exec_stream("echo", vec!["hello world"], true);
+        exec_stream_shell("echo hello world");
     }
 }

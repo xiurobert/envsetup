@@ -3,6 +3,7 @@ mod toolchains;
 mod validations;
 pub mod git;
 pub mod cli_utils;
+mod plan;
 
 
 use std::error::Error;
